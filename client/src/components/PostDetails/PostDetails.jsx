@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { useParams, useHistory } from "react-router-dom";
 
-import { getPost } from '../../actions/posts'
+import { getPost, getPostBySearch } from "../../actions/posts";
 import useStyles from "./styles";
 
 
@@ -20,19 +20,32 @@ const PostDetails = () => {
   const classes = useStyles();
   const { id } = useParams();
 
+   
   useEffect(() => {
     dispatch(getPost(id))
   },[id])
 
-  if(!post) return null
+  useEffect(()=>{
+      if(post){
+          dispatch(getPostBySearch({search: 'none',tags: post?.tags.join(',')}))
+      }
+  },[post])
 
-  if(isLoading) {
-      return (
-          <Paper elevation={6} className={classes.loadingPaper}>
-              <CircularProgress size="7em"/>
-          </Paper>
-      )
+ 
+
+  if (!post) return null;
+
+  const openPost = (_id) => history.push(`/posts/${_id}`);
+
+  if (isLoading) {
+    return (
+      <Paper elevation={6} className={classes.loadingPaper}>
+        <CircularProgress size="7em" />
+      </Paper>
+    );
   }
+
+  const recommendedPosts = posts.filter(({_id}) => _id !== post._id)
 
   return (
     <Paper style={{ padding: "20px", borderRadius: "15px" }} elevation={6}>
@@ -71,7 +84,19 @@ const PostDetails = () => {
           />
         </div>
       </div>
-      {/* Recommended posts */}
+      {recommendedPosts.length && (
+          <div className={classes.section}>
+              <Typography gutterBottom variant="h5">You might also like</Typography>
+              <Divider />
+              <div className={classes.recommendedPosts}>
+                  {recommendedPosts.map(({ title, message, name, likes, selectedFile, _id})=>(
+                      <div>
+                          {title}
+                      </div>
+                  ))}
+              </div>
+          </div>
+      )}
     </Paper>
   );
 };

@@ -32,10 +32,12 @@ import * as api from '../api/index.js'
 
 export const getPostBySearch = (searchQuery) => async (dispatch) =>{
     try {
-        dispatch({ type: START_LOADING})
+        // dispatch({ type: START_LOADING})
+        
         const { data: {data} } = await api.fetchPostBySearch(searchQuery)
+        console.log(data);
         dispatch({ type: END_LOADING})
-        dispatch({ type: FETCH_BY_SEARCH, payload: data})
+        dispatch({ type: FETCH_BY_SEARCH, payload: {data}})
     } catch (error) {
         console.log(error)
     }

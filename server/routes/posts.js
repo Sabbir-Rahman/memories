@@ -8,10 +8,9 @@ import {
 } from '../controllers/posts.js'
 import auth from '../middleware/auth.js'
 
-
+router.get("/search", getPostsBySearch);
 router.get('/', getPost)
 router.get("/:id", getSinglePost);
-router.get('/search', getPostsBySearch)
 router.post('/',auth, createPost)
 router.patch('/:id',auth,updatePost)
 router.delete('/:id',auth, deletePost)
