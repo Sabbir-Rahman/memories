@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { Card, CardActions, CardContent, CardMedia, Button, Typography, ButtonBase } from '@material-ui/core'
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt'
 import DeleteIcon from '@material-ui/icons/Delete'
@@ -16,25 +16,56 @@ const Post = ({ post, setCurrentId }) => {
     const history = useHistory()
     const user = JSON.parse(localStorage.getItem('profile'))
     const dispatch = useDispatch()
+    const [likes, setLikes ] = useState(post?.likes)
 
     //sub component for likes
 
-    const Likes = () => {
-        if (post.likes.length > 0) {
-            return post.likes.find((like) => like === (user?.result?.googleId || user?.result?._id))
-              ? (
-                <><ThumbUpAltIcon fontSize="small" />&nbsp;{post.likes.length > 2 ? `You and ${post.likes.length - 1} others` : `${post.likes.length} like${post.likes.length > 1 ? 's' : ''}` }</>
-              ) : (
-                <><ThumbUpAltOutlined fontSize="small" />&nbsp;{post.likes.length} {post.likes.length === 1 ? 'Like' : 'Likes'}</>
-              );
-          }
-      
-          return <><ThumbUpAltOutlined fontSize="small" />&nbsp;Like</>;
-    }
+    const hasLiked = post.likes.find((like) => like === (user?.result?.googleId || user?.result?._id))
+    const userId = user?.result.googleId || user?.result?._id
+    
+   
 
     const openPost = () => {
         history.push(`/posts/${post._id}`)
     }
+
+    const handleLike = async()=>{
+      dispatch(likePost(post._id))
+
+      if(hasLiked){
+        setLikes(post.likes.filter((id)=> id !== userId))
+      } else {
+        setLikes([...post.likes, userId])
+      }
+    }
+
+     const Likes = () => {
+       if (likes.length > 0) {
+         return likes.find(
+           (like) => like === userId
+         ) ? (
+           <>
+             <ThumbUpAltIcon fontSize="small" />
+             &nbsp;
+             {likes.length > 2
+               ? `You and ${likes.length - 1} others`
+               : `${likes.length} like${likes.length > 1 ? "s" : ""}`}
+           </>
+         ) : (
+           <>
+             <ThumbUpAltOutlined fontSize="small" />
+             &nbsp;{likes.length} {likes.length === 1 ? "Like" : "Likes"}
+           </>
+         );
+       }
+
+       return (
+         <>
+           <ThumbUpAltOutlined fontSize="small" />
+           &nbsp;Like
+         </>
+       );
+     };
 
     return (
       <Card className={classes.card} raised elevation={6}>
@@ -88,7 +119,7 @@ const Post = ({ post, setCurrentId }) => {
             size="small"
             color="primary"
             disabled={!user?.result}
-            onClick={() => dispatch(likePost(post._id))}
+            onClick={handleLike}
           >
             <Likes />
           </Button>
