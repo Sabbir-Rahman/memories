@@ -7,14 +7,18 @@ import useStyles from "./styles";
 const CommentSection = ({ post }) => {
   console.log(post);
   const classes = useStyles();
-  const [comments, setComments] = useState([0, 1, 2, 3]);
+  const [comments, setComments] = useState(post?.comments);
   const [comment, setComment] = useState("");
   const user = JSON.parse(localStorage.getItem('profile'));
   const dispatch = useDispatch();
 
-  const handleClick = () => {
-    const finalComment = `${user.result.name}: ${comment}`;
-    dispatch(commentPost(finalComment, post._id));
+  const handleClick = async () => {
+    const finalComment = `${user.result.name}: ${comment}`
+
+    const newComments = await dispatch(commentPost(finalComment,post._id))
+
+    setComments(newComments)
+    setComment('')
   };
 
   return (
@@ -25,14 +29,13 @@ const CommentSection = ({ post }) => {
         </Typography>
         {comments.map((c, i) => (
           <Typography key={i} gutterBottom variant="subtitle1">
-            Comment gsddfsfgsgdfdfvsfdvsfvd sfd sdfvdfvdsffv
-            dsfvfdvdfdvfdvdsvvsdfvdsvvfddsdvdfdfv dsfdffd fdv {i}
+            {c}
           </Typography>
         ))}
       </div>
       <div>
         {user?.result?.name && (
-          <div style={{ width: "60%" }}>
+          <div style={{ width: "70%"}}>
             <Typography gutterBottom variant="h6">
               Write a Comment
             </Typography>
