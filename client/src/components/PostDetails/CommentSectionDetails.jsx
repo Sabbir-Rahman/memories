@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Typography, TextField, Button } from "@material-ui/core";
 import { useDispatch } from "react-redux";
-
+import { commentPost } from '../../actions/posts'
 import useStyles from "./styles";
 
 const CommentSection = ({ post }) => {
@@ -9,8 +9,12 @@ const CommentSection = ({ post }) => {
   const classes = useStyles();
   const [comments,setComments] = useState([0,1,2,3])
   const [comment,setComment] = useState('')
+  const user = JSON.parse(localStorage.getItem('user'))
+  const dispatch  = useDispatch()
 
   const handleClick = () => {
+    const finalComment = `${user.result.name}: ${comment}`
+    dispatch(commentPost(finalComment,post._id))
 
   }
 
@@ -22,7 +26,8 @@ const CommentSection = ({ post }) => {
         </Typography>
         {comments.map((c, i) => (
           <Typography key={i} gutterBottom variant="subtitle1">
-            Comment gsddfsfgsgdfdfvsfdvsfvd sfd sdfvdfvdsffv dsfvfdvdfdvfdvdsvvsdfvdsvvfddsdvdfdfv dsfdffd fdv {i}
+            Comment gsddfsfgsgdfdfvsfdvsfvd sfd sdfvdfvdsffv
+            dsfvfdvdfdvfdvdsvvsdfvdsvvfddsdvdfdfv dsfdffd fdv {i}
           </Typography>
         ))}
       </div>
@@ -40,11 +45,10 @@ const CommentSection = ({ post }) => {
           onChange={(e) => setComment(e.target.value)}
         />
         <Button
-          style={{ marginTop: "10px" }}
+          style={{ marginTop: "10px", color: "blue" }}
           fullWidth
           disabled={!comment}
           variant="contained"
-          color="primary"
           onClick={handleClick}
         >
           Comment
