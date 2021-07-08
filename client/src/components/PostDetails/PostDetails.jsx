@@ -33,7 +33,7 @@ const PostDetails = () => {
   if (!post) return null;
 
   const openPost = (_id) => history.push(`/posts/${_id}`);
-
+  console.log(isLoading)
   if (isLoading) {
     return (
       <Paper elevation={6} className={classes.loadingPaper}>

@@ -1,6 +1,6 @@
 //here posts can not be remain uninitialized
 
-import { FETCH_ALL,FETCH_BY_SEARCH, CREATE,FETCH_POST,UPDATE, DELETE, LIKE,START_LOADING,END_LOADING } from '../constants/actionTypes'
+import { FETCH_ALL,FETCH_BY_SEARCH, CREATE,FETCH_POST,UPDATE, DELETE, LIKE,START_LOADING,END_LOADING,COMMENT } from '../constants/actionTypes'
 
 export default (state = { isLoading:true, posts: []}, action) => {
     switch (action.type) {
@@ -37,6 +37,19 @@ export default (state = { isLoading:true, posts: []}, action) => {
             post._id === action.payload._id ? action.payload : post
           ),
         };
+      case COMMENT:
+        return {
+          ...state,
+          posts: state.posts.map((post)=> {
+            // return all the post normally 
+            // change the post that just received a comment
+            if (post._id === action.payload._id) {
+              return action.payload
+            }
+
+            return post
+          })
+        }
       case FETCH_ALL:
         return {
           ...state,
